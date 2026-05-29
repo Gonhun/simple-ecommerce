@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String    @id @default(uuid())
+  email                String    @unique @db.VarChar(255)
+  password             String    @db.VarChar(255)
+  name                 String?   @db.VarChar(255)
+  address              String?   @db.Text
+  resetPasswordToken   String?   @db.VarChar(255)
+  resetPasswordExpires DateTime?
+  orders               Order[]
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([name])
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  slug      String    @unique @db.VarChar(255)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Brand {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  slug      String    @unique @db.VarChar(255)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id               String      @id @default(uuid())
+  partNumber       String      @unique @db.VarChar(255)
+  name             String      @db.VarChar(255)
+  description      String?     @db.Text
+  price            Float
+  stock            Int         @default(0)
+  imageUrl         String?     @db.VarChar(255)
+  carCompatibility String?     @db.Text
+  categoryId       String
+  category         Category    @relation(fields: [categoryId], references: [id])
+  brandId          String
+  brand            Brand       @relation(fields: [brandId], references: [id])
+  orderItems       OrderItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([name])
+  @@index([partNumber])
+  @@index([categoryId])
+  @@index([brandId])
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  totalAmount     Float
+  status          String      @default("Menunggu Pembayaran") @db.VarChar(255)
+  shippingAddress String      @db.Text
+  orderItems      OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id              String    @id @default(uuid())
+  orderId         String
+  order           Order     @relation(fields: [orderId], references: [id])
+  productId       String
+  product         Product   @relation(fields: [productId], references: [id])
+  quantity        Int
+  priceAtPurchase Float
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model AppConfig {
+  id        String   @id @default(uuid())
+  key       String   @unique @db.VarChar(255)
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

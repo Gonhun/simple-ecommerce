@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,6 +25,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+          <div className="container">
+            <a className="navbar-brand" href="/">SpareParts E-Commerce</a>
+            <div className="collapse navbar-collapse">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item"><a className="nav-link" href="/products">Products</a></li>
+                <li className="nav-item"><a className="nav-link" href="/cart">Cart</a></li>
+                <li className="nav-item"><a className="nav-link" href="/orders">My Orders</a></li>
+                <li className="nav-item border-start ms-2 ps-2"><a className="nav-link text-warning" href="/admin/categories">+ Category</a></li>
+                <li className="nav-item"><a className="nav-link text-warning" href="/admin/brands">+ Brand</a></li>
+                <li className="nav-item"><a className="nav-link text-warning" href="/admin/products">+ Product</a></li>
+                <li className="nav-item border-start ms-2 ps-2"><a className="nav-link" href="/login">Login</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
         {children}
       </body>
     </html>
